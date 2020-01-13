@@ -171,6 +171,7 @@ export interface FoodlensMeasurement {
   refPhoto: string; // cloud store url
   composition: FoodlensPartial[];
   mealType: string;
+  imgurl?: string;
 }
 export interface DaySummaryWithArray<T> {
   date: Date;
