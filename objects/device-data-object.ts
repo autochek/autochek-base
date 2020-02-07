@@ -212,6 +212,10 @@ export class BodyscaleMeasurement extends DeviceDataBase {
     super();
     if (clone) {
       Object.assign(this, clone);
+      
+    }
+    if(!this.date) {
+      this.date = new Date();
     }
     if (this.date instanceof firebase.firestore.Timestamp) {
       this.date = this.date.toDate();
