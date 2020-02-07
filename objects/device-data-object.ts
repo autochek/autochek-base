@@ -255,7 +255,8 @@ export class GlucosemeterMeasurement extends DeviceDataBase {
   static deserializer(value: any): GlucosemeterMeasurement {
 
     return new GlucosemeterMeasurement((value.date instanceof firebase.firestore.Timestamp) ? value.date.toDate() : value.date,
-      typeof (value.measurement) === 'string' ? value.measurement.parseInt() : value.measurement,
+      Number(value.measurement),
+      //typeof (value.measurement) === 'string' ? value.measurement.parseInt() : value.measurement,
       value.timeofday,
       value.condition);
   }
