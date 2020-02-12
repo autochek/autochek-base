@@ -1,10 +1,7 @@
-// ==============================class area ================================== //
 import * as moment from 'moment';
-
 import * as firebase from 'firebase';
-import { getArrayStatistic, average } from 'autochek-base/Utils';
-import { GlucoseGoal } from './user-goal';
-
+import { average, getArrayStatistic } from 'autochek-base/Utils';
+import { DietGoal, GlucoseGoal } from './user-goal';
 
 
 export interface BodyscaleMeasurement {
@@ -18,7 +15,6 @@ export interface BodyscaleMeasurement {
   bone: number; // 28 -> 2.8kg
   bmi: number;
 }
-
 
 
 export type GmCondition = 'b_meal' | 'a_meal' | '';
@@ -53,8 +49,6 @@ export interface HbA1C {
 }
 
 // 오늘의 혈당
-
-
 export interface BloodpressureMeasurement {
   date: Date;
   systolic: number;
@@ -74,9 +68,6 @@ export interface BloodpressureStatistics {
   count_over: number;
   count_normal: number;
 }
-
-
-
 
 
 // from Pedometer
@@ -141,17 +132,20 @@ export interface FoodlensNutrition {
   vitamind: number;
   vitamine: number;
 }
+
 export interface FoodlensRawUserSelectedFood {
   foodId: number;
   foodName: string;
   nutrition: FoodlensNutrition;
 }
+
 export interface FoodlensRawFoodPosition {
   eatAmount: number;
   foodImagePath: string;
   userSelectedFood: FoodlensRawUserSelectedFood;
   foodCandidates: any[];
 }
+
 export interface FoodlensRaw {
   eatDate: string;
   eatType: number;
@@ -159,6 +153,7 @@ export interface FoodlensRaw {
   mealType: string;
   predictedImagePath: string;
 }
+
 // from Foodlens
 export interface FoodlensPartial extends FoodlensNutrition {
   refPhoto: string; // use cloud store
@@ -166,6 +161,7 @@ export interface FoodlensPartial extends FoodlensNutrition {
   calories: number;
   eatAmount: number;
 }
+
 export interface FoodlensMeasurement {
   date: Date;
   refPhoto: string; // cloud store url
@@ -173,20 +169,17 @@ export interface FoodlensMeasurement {
   mealType: string;
   imgurl?: string;
 }
+
 export interface DaySummaryWithArray<T> {
   date: Date;
   value: T[];
 }
+
 export interface FoodlensDaySummary extends DaySummaryWithArray<FoodlensMeasurement> {
   date: Date;
   value: FoodlensMeasurement[];
   sumCalories: number;
 }
-
-
-
-
-
 
 
 export abstract class DeviceDataBase {
@@ -199,6 +192,7 @@ export abstract class DeviceDataBase {
   }
 
 }
+
 export class BodyscaleMeasurement extends DeviceDataBase {
   static deserializer(value: any): BodyscaleMeasurement {
     return new BodyscaleMeasurement(value);
@@ -212,9 +206,9 @@ export class BodyscaleMeasurement extends DeviceDataBase {
     super();
     if (clone) {
       Object.assign(this, clone);
-      
+
     }
-    if(!this.date) {
+    if (!this.date) {
       this.date = new Date();
     }
     if (this.date instanceof firebase.firestore.Timestamp) {
@@ -309,12 +303,65 @@ export class GlucosemeterMeasurement extends DeviceDataBase {
 
     return offset;
   }
+
   getTimeString(): string {
     return ['분류 없음', '아침식사 전', '아침식사 후', '점심식사 전', '점심식사 후', '저녁식사 전', '저녁식사 후', '취침'][this.getTimeIndex()];
   }
 
 }
 
+export interface FoodlensStatistics {
+  count: number;
+  sum: number;
+  countLow: number;
+  countNormal: number;
+  countHigh: number;
+  min: number;
+  max: number;
+}
+
+export class FoodlensStatistics {
+  constructor(foodDaySummary: FoodlensDaySummary[], FoodlensGoal: DietGoal) {
+    let sum = 0;
+    let count = 0;
+
+    let countLow = 0;
+    let countHigh = 0;
+    let countNormal = 0;
+
+    let min = 0;
+    let max = 0;
+    foodDaySummary.forEach(daySummary => {
+      daySummary.value.forEach(obj => {
+        const cal = obj.getCalories();
+        sum += cal;
+        count += 1;
+        if (cal > FoodlensGoal.calConsumptionMax) {
+          countHigh++;
+        } else if (cal <= FoodlensGoal.calConsumptionMax && cal > FoodlensGoal.calConsumptionMin) {
+          countNormal++;
+        } else {
+          countLow++;
+        }
+
+        if (min === 0) {
+          min = cal;
+        }
+        if (max === 0) {
+          max = cal;
+        }
+
+        if (min > cal) {
+          min = cal;
+        }
+        if (max < cal) {
+          max = cal;
+        }
+      });
+    });
+    return {sum, count, countLow, countHigh, countNormal, min, max};
+  }
+}
 
 export interface GlucosemeterStatistics {
   count: number;
@@ -325,9 +372,8 @@ export interface GlucosemeterStatistics {
   min: number;
   max: number;
 }
+
 export class GlucosemeterStatistics {
-
-
   constructor(gm: GlucosemeterDaySummary, glucoseGoal: GlucoseGoal) {
     let sum = 0;
     let count = 0;
@@ -344,11 +390,9 @@ export class GlucosemeterStatistics {
         continue;
       }
 
-
       // Sum and Count
       sum += wgm;
       count += 1;
-
 
       const hlc = gm.isHighLow(glucoseGoal, prop);
       // console.log('highlow', prop, hlc, gm[prop], glucoseGoal[prop])
@@ -359,7 +403,6 @@ export class GlucosemeterStatistics {
       } else {
         countNormal += 1;
       }
-
 
       // Min and Max
       if (min === 0) {
@@ -377,19 +420,18 @@ export class GlucosemeterStatistics {
       }
 
     }
-    return { sum, count, countLow, countHigh, countNormal, min, max };
+    return {sum, count, countLow, countHigh, countNormal, min, max};
   }
-
 }
+
 export class GlucosemeterDaySummary {
   constructor(date?: Date) {
     if (date) {
       this.date = date;
     }
   }
+
   public static packFromGlucosemeterMeasurements(gms: GlucosemeterMeasurement[]): GlucosemeterDaySummary {
-
-
     const abundant = {};
 
     const gds = new GlucosemeterDaySummary();
@@ -398,8 +440,6 @@ export class GlucosemeterDaySummary {
     }
 
     gds.date = gms[0].date;
-
-
 
     for (const gm of gms) {
       const property = GlucosemeterDaySummaryProperties[gm.getTimeIndex()];
@@ -460,6 +500,7 @@ export class GlucosemeterDaySummary {
     }
     return average(numbers);
   }
+
   getAmealAvg(): number {
     const numbers = [];
     const properties = ['morningAfterMeal', 'afternoonAfterMeal', 'eveningAfterMeal'];
@@ -475,6 +516,7 @@ export class GlucosemeterDaySummary {
     }
     return average(numbers);
   }
+
   getSleepAvg(): number {
     const numbers = [];
     const properties = ['beforeSleep'];
@@ -492,7 +534,6 @@ export class GlucosemeterDaySummary {
   }
 
   public isHighLow(glucoseGoal: GlucoseGoal, property: string): number {
-
     let minthr = glucoseGoal.bMealMin;
     let maxthr = glucoseGoal.aMeal;
 
@@ -523,10 +564,7 @@ export class GlucosemeterDaySummary {
       return 1;
     }
     return 0;
-
   }
-
-
 }
 
 
@@ -574,10 +612,10 @@ export class PedometerDaySummary extends DeviceDataBase {
   getPrimaryKey(): string {
     return moment(this.date).format('YYYYMMDD');
   }
+
   constructor(public date: Date, public step: number, public cal: number, public dist: number) {
     super();
   }
-
 }
 
 export class PedometerSleepSummary extends DeviceDataBase {
@@ -596,12 +634,11 @@ export class PedometerSleepSummary extends DeviceDataBase {
   getPrimaryKey(): string {
     return moment(this.date).format('YYYYMMDD');
   }
+
   constructor(date: Date, public deepSleep: number, public lightSleep: number) {
     super();
     this.date = moment(date).startOf('day').toDate();
   }
-
-
 }
 
 export class PedometerSleepSegment extends DeviceDataBase {
@@ -642,13 +679,12 @@ export class PedometerHeartrateSegment extends DeviceDataBase {
   getPrimaryKey(): string {
     return moment(this.date).format('YYYYMMDDHHmm');
   }
+
   constructor(date: Date, rate: number) {
     super();
     this.date = date;
     this.rate = rate;
   }
-
-
 }
 
 export class PedometerTimeSegment extends DeviceDataBase {
@@ -676,6 +712,7 @@ export class PedometerTimeSegment extends DeviceDataBase {
   getPrimaryKey(): string {
     return moment(this.date).format('YYYYMMDDHHmm');
   }
+
   constructor(date: Date, public duration: number, public step: number, public cal: number, public dist: number) {
     super();
     this.date = moment(date).startOf('minute').toDate();
@@ -724,6 +761,7 @@ export class FoodlensMeasurement extends DeviceDataBase {
   getPrimaryKey(): string {
     return moment(this.date).format('YYYYMMDDHHmmss');
   }
+
   constructor(raw: FoodlensRaw, value?) {
     super();
     if (raw) {
@@ -753,8 +791,8 @@ export class FoodlensMeasurement extends DeviceDataBase {
         this.mealType = value.mealType;
       }
     }
-
   }
+
   getNutrition(name: string) {
     let value = 0;
     for (const part of this.composition) {
@@ -764,6 +802,7 @@ export class FoodlensMeasurement extends DeviceDataBase {
     }
     return value;
   }
+
   getCalories(): number {
     let cal = 0;
     for (const part of this.composition) {
@@ -777,7 +816,6 @@ export class FoodlensMeasurement extends DeviceDataBase {
   }
 
 
-
   getMenuString(): string {
     return this.composition.map((m: FoodlensPartial) => m.foodname).join('|');
   }
@@ -785,7 +823,6 @@ export class FoodlensMeasurement extends DeviceDataBase {
 }
 
 export class FoodlensPartial {
-
   constructor(foodname: string, eatAmount: number, calories: number, refPhoto: string, nutrition?: FoodlensNutrition) {
     this.foodname = foodname;
     this.calories = calories;
@@ -795,8 +832,6 @@ export class FoodlensPartial {
       Object.assign(this, nutrition);
     }
   }
-
-
 }
 
 
@@ -815,10 +850,9 @@ export class FoodlensDaySummary {
       value = new Array<FoodlensMeasurement>();
     }
 
-    this.sumCalories = value.reduce((before: number, fm: FoodlensMeasurement) => before += fm.getCalories() , 0);
+    this.sumCalories = value.reduce((before: number, fm: FoodlensMeasurement) => before += fm.getCalories(), 0);
   }
 }
-
 
 
 export class BloodpressureMeasurement extends DeviceDataBase {
@@ -826,6 +860,7 @@ export class BloodpressureMeasurement extends DeviceDataBase {
   static deserializer(value: any): BloodpressureMeasurement {
     return new BloodpressureMeasurement(value);
   }
+
   getPrimaryKey(): string {
     return moment(this.date).format('YYYYMMDDHHmmss');
   }
