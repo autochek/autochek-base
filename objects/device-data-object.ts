@@ -215,6 +215,13 @@ export class BodyscaleMeasurement extends DeviceDataBase {
       this.date = this.date.toDate();
     }
   }
+
+  public getMuscleMass(): Number{
+    if(!this.muscle) {
+      return 0;
+    }
+    return this.muscle*this.weight/100;
+  }
 }
 
 
