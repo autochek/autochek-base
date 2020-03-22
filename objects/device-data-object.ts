@@ -321,6 +321,7 @@ export class GlucosemeterMeasurement extends DeviceDataBase {
 export interface FoodlensStatistics {
   count: number;
   sum: number;
+  average: number
   countLow: number;
   countNormal: number;
   countHigh: number;
@@ -367,6 +368,8 @@ export class FoodlensStatistics {
         }
       })
     })
+    let average = sum / count
+    return {sum, count, countLow, countHigh, countNormal, min, max, average}
   }
 }
 
