@@ -2,6 +2,7 @@ import * as moment from 'moment'
 import * as firebase from 'firebase'
 import { average, getArrayStatistic } from 'autochek-base/Utils'
 import { DietGoal, GlucoseGoal } from './user-goal'
+import Timestamp = firebase.firestore.Timestamp
 
 
 export interface BodyscaleMeasurement {
@@ -163,7 +164,7 @@ export interface FoodlensPartial extends FoodlensNutrition {
 }
 
 export interface FoodlensMeasurement {
-  date: Date;
+  date: Date | Timestamp;
   refPhoto: string; // cloud store url
   composition: FoodlensPartial[];
   mealType: string;
@@ -321,7 +322,6 @@ export class GlucosemeterMeasurement extends DeviceDataBase {
 export interface FoodlensStatistics {
   count: number;
   sum: number;
-  average: number
   countLow: number;
   countNormal: number;
   countHigh: number;
@@ -368,8 +368,7 @@ export class FoodlensStatistics {
         }
       })
     })
-    let average = sum / count
-    return {sum, count, countLow, countHigh, countNormal, min, max, average}
+    return {sum, count, countLow, countHigh, countNormal, min, max}
   }
 }
 
@@ -769,7 +768,11 @@ export class FoodlensMeasurement extends DeviceDataBase {
   }
 
   getPrimaryKey(): string {
-    return moment(this.date).format('YYYYMMDDHHmmss')
+    if (this.date instanceof Timestamp) {
+      return moment(new Date(this.date.toDate())).format('YYYYMMDDHHmmss')
+    } else {
+      return moment(this.date).format('YYYYMMDDHHmmss')
+    }
   }
 
   constructor(raw: FoodlensRaw, value?) {
