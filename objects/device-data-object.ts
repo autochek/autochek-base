@@ -256,18 +256,19 @@ export class GlucosemeterMeasurement extends DeviceDataBase {
       Number(value.measurement),
       //typeof (value.measurement) === 'string' ? value.measurement.parseInt() : value.measurement,
       value.timeofday,
-      value.condition);
+      value.condition,
+      value.ignore);
   }
 
   getPrimaryKey(): string {
     return moment(this.date).format('YYYYMMDDHHmmss');
   }
 
-  constructor(date: Date, measurement: number, timeofday?: GmTimeofday, condition?: GmCondition) {
+  constructor(date: Date, measurement: number, timeofday?: GmTimeofday, condition?: GmCondition, ignore?:boolean) {
     super();
     this.date = date;
     this.measurement = measurement;
-    this.ignore = false;
+    this.ignore = ignore?ignore:false;
     this.setCondition(timeofday, condition);
   }
 
