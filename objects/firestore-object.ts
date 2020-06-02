@@ -1,8 +1,9 @@
-import { makeid } from 'autochek-base/Utils';
-import * as firebase from 'firebase';
+import { makeid } from 'autochek-base/Utils'
+import * as firebase from 'firebase'
 
 export abstract class FirestoreObjectBase {
-  static tablename: string;
+  static tablename: string
+
   abstract getDocname(): string;
 }
 
@@ -25,13 +26,13 @@ export interface FcmMessage {
 export class FcmMessage {
   constructor(clone?: any) {
     if (clone) {
-      Object.assign(this, clone);
+      Object.assign(this, clone)
       if (clone.date instanceof firebase.firestore.Timestamp) {
-        this.date = clone.date.toDate();
+        this.date = clone.date.toDate()
       }
     } else {
-      this.id = makeid(40);
-      this.date = new Date();
+      this.id = makeid(40)
+      this.date = new Date()
     }
   }
 }
