@@ -25,6 +25,7 @@ export let GlucosemeterDaySummaryProperties = ['', 'morningBeforeMeal', 'morning
   'eveningBeforeMeal', 'eveningAfterMeal', 'beforeSleep']
 
 export interface GlucosemeterMeasurement {
+  id:String;
   date: Date;
   measurement: number; // unit : mg/gL
   condition: GmCondition; // '식전', '식후' 혹은 '공복'/'식후'
@@ -185,7 +186,7 @@ export interface FoodlensDaySummary extends DaySummaryWithArray<FoodlensMeasurem
 
 export abstract class DeviceDataBase {
 
-
+  id:String;
   abstract getPrimaryKey(): string;
 
   toObject() {
@@ -199,6 +200,22 @@ export class BodyscaleMeasurement extends DeviceDataBase {
     return new BodyscaleMeasurement(value)
   }
 
+  static getKeys(): string[]{
+    return ['date', 'weight', 'fat', 'water', 'muscle', 'bmr', 'visceral', 'bone', 'bmi'];
+  }
+  
+  static getColumnNamesMap(): object {
+    return {'date':'날짜',
+     'weight':'체중', 
+     'fat':'체지방', 
+     'water':'체수분', 
+     'muscle':"근육량",
+     'bmr':"기초대사량",
+     'visceral':"복부지방",
+     'bone':"골량",
+     'bmi':"BMI"};
+  }
+
   getPrimaryKey(): string {
     return moment(this.date).format('YYYYMMDDHHmmss')
   }
@@ -207,7 +224,6 @@ export class BodyscaleMeasurement extends DeviceDataBase {
     super()
     if (clone) {
       Object.assign(this, clone)
-
     }
     if (!this.date) {
       this.date = new Date()
@@ -253,7 +269,6 @@ export class GlucosemeterMeasurement extends DeviceDataBase {
     return result
   }
 
-
   static toSimpleArray(arr: GlucosemeterMeasurement[]): number[] {
     return arr.map((gm: GlucosemeterMeasurement) => gm.measurement)
   }
@@ -265,19 +280,33 @@ export class GlucosemeterMeasurement extends DeviceDataBase {
       //typeof (value.measurement) === 'string' ? value.measurement.parseInt() : value.measurement,
       value.timeofday,
       value.condition,
-      value.ignore);
+      value.ignore,
+      value.id);
+  }
+
+  static getKeys(): string[]{
+    return ['date', 'measurement', 'timeofday', 'condition', 'ignore'];
+  }
+  
+  static getColumnNamesMap(): object {
+    return {'date':'날짜',
+      'measurement':'측정값',
+      'timeofday':'측정시간',
+      'condition':'측정조건',
+      'ignore':'무시된데이터'};
   }
 
   getPrimaryKey(): string {
     return moment(this.date).format('YYYYMMDDHHmmss')
   }
 
-  constructor(date: Date, measurement: number, timeofday?: GmTimeofday, condition?: GmCondition, ignore?:boolean) {
+  constructor(date: Date, measurement: number, timeofday?: GmTimeofday, condition?: GmCondition, ignore?:boolean, id?:string) {
     super();
     this.date = date;
     this.measurement = measurement;
     this.ignore = ignore?ignore:false;
     this.setCondition(timeofday, condition);
+    this.id= id;
   }
 
   setCondition(timeofday: GmTimeofday, condition: GmCondition) {
@@ -874,6 +903,17 @@ export class BloodpressureMeasurement extends DeviceDataBase {
   static deserializer(value: any): BloodpressureMeasurement {
     return new BloodpressureMeasurement(value)
   }
+  static getKeys(): string[]{
+    return ['date', 'systolic', 'diastolic', 'mean', 'rate'];
+  }
+  
+  static getColumnNamesMap(): object {
+    return {'date':'날짜',
+      'systolic':'수축(최대)',
+      'diastolic':'이완(최소)',
+      'mean':'평균',
+      'rate':'심박수(분당)'};
+  }
 
   getPrimaryKey(): string {
     return moment(this.date).format('YYYYMMDDHHmmss')
@@ -899,7 +939,7 @@ export class BloodpressureMeasurement extends DeviceDataBase {
     if (typeof (this.rate) === 'string') {
       this.rate = parseInt(this.rate, 10)
     }
-
+    
   }
 }
 
