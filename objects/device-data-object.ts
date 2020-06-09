@@ -648,6 +648,19 @@ export class PedometerDaySummary extends DeviceDataBase {
     return new PedometerDaySummary(date, value.step, value.cal, value.dist)
   }
 
+  static getKeys(): string[]{
+    return ['date', 'step', 'cal', 'dist'];
+  }
+  
+  static getColumnNamesMap(): object {
+    return {
+      'date':'날짜',
+      'step':'걸음수',
+      'cal':'소모칼로리',
+      'dist':'이동거리',
+    }
+  }
+
   getPrimaryKey(): string {
     return moment(this.date).format('YYYYMMDD')
   }
@@ -895,6 +908,7 @@ export class FoodlensDaySummary {
 
     this.sumCalories = value.reduce((before: number, fm: FoodlensMeasurement) => before += fm.getCalories(), 0)
   }
+
 }
 
 
