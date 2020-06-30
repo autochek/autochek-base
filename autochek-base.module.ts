@@ -1,5 +1,4 @@
-import { NgModule } from '@angular/core';
-
+import { NgModule } from '@angular/core'
 
 @NgModule({
   imports: [],
@@ -7,7 +6,8 @@ import { NgModule } from '@angular/core';
   exports: [],
   providers: [],
 })
-export class AutochekBaseModule { }
+export class AutochekBaseModule {
+}
 
 // Most of files here are actually object files. Therefore module is not necessarily required
 

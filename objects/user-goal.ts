@@ -1,4 +1,3 @@
-
 export interface GlucoseGoal {
   bMealMin: number;
   aMealMin: number;
@@ -19,11 +18,9 @@ export interface BpGoal {
 }
 
 export interface BodyscaleGoal {
-
   // web+app
   weightMax: number;
   weightMin: number;
-
 
   // web
   bmiMax: number;
@@ -50,29 +47,21 @@ export interface DietGoal {
 }
 
 
-
-
-
 // ================================ //
 
 export class GoalBase {
-  static record = 'goal';
-
-
-
+  static record = 'goal'
 
   static deserializer(fb: object) {
-    return new GoalBase();
+    return new GoalBase()
   }
 }
 
 export class ActivityGoal extends GoalBase {
-  static record = 'activity_goal';
-
-
+  static record = 'activity_goal'
 
   constructor() {
-    super();
+    super()
     // this.step = step;
     // this.calMax = calMax;
     // this.calMin = calMin;
@@ -80,129 +69,130 @@ export class ActivityGoal extends GoalBase {
 
   static deserializer(fb: ActivityGoal): ActivityGoal {
     if (!fb) {
-      return null;
+      return null
     }
-    return Object.assign(new ActivityGoal(), fb);
+    return Object.assign(new ActivityGoal(), fb)
   }
 
   static getDefault(): ActivityGoal {
-    const obj = new ActivityGoal();
-    obj.step = 5000;
-    return obj;
+    const obj = new ActivityGoal()
+    obj.step = 5000
+    return obj
   }
 }
 
 export class DietGoal extends GoalBase {
-  static record = 'diet_goal';
+  static record = 'diet_goal'
 
   constructor() {
-    super();
+    super()
   }
 
   static deserializer(fb: DietGoal): DietGoal {
     if (!fb) {
-      return null;
+      return null
     }
-    return Object.assign(new DietGoal(), fb);
+    return Object.assign(new DietGoal(), fb)
   }
 
   static getDefault(): DietGoal {
-    const obj = new DietGoal();
-    obj.calConsumptionMax = 1800;
-    obj.calConsumptionMin = 1600;
-    return obj;
+    const obj = new DietGoal()
+    obj.calConsumptionMax = 1800
+    obj.calConsumptionMin = 1600
+    return obj
   }
 }
 
 
 export class GlucoseGoal extends GoalBase {
-  static record = 'glucose_goal';
+  static record = 'glucose_goal'
+
   constructor() {
-    super();
+    super()
   }
 
   static deserializer(fb: GlucoseGoal): GlucoseGoal {
     if (!fb) {
-      return null;
+      return null
     }
-    return Object.assign(new GlucoseGoal(), fb);
+    return Object.assign(new GlucoseGoal(), fb)
   }
 
   static getDefault(): GlucoseGoal {
+    const obj = new GlucoseGoal()
+    obj.bMealMin = 80
+    obj.aMealMin = 100
+    obj.sleepMin = 90
+    obj.bMeal = 130
+    obj.aMeal = 200
+    obj.sleep = 140
 
-    const obj = new GlucoseGoal();
-    obj.bMealMin = 80;
-    obj.aMealMin = 100;
-    obj.sleepMin = 90;
-    obj.bMeal = 130;
-    obj.aMeal = 200;
-    obj.sleep = 140;
-
-    return obj;
+    return obj
   }
 }
 
 export class BpGoal extends GoalBase {
-  static record = 'bloodpressure_goal';
+  static record = 'bloodpressure_goal'
+
   constructor() {
-    super();
+    super()
   }
 
   static deserializer(fb: BpGoal): BpGoal {
     if (!fb) {
-      return null;
+      return null
     }
-    return Object.assign(new BpGoal(), fb);
+    return Object.assign(new BpGoal(), fb)
   }
 
   static getDefault(): BpGoal {
-    const obj = new BpGoal();
-    obj.pressureSmall = 60;
-    obj.pressureBig = 140;
-    return obj;
+    const obj = new BpGoal()
+    obj.pressureSmall = 60
+    obj.pressureBig = 140
+    return obj
   }
 }
 
 export class BodyscaleGoal extends GoalBase {
-  static record = 'bodyscale_goal';
+  static record = 'bodyscale_goal'
+
   constructor() {
-    super();
+    super()
 
   }
 
   static deserializer(fb: BodyscaleGoal): BodyscaleGoal {
     if (!fb) {
-      return null;
+      return null
     }
-    fb.weightMax = Number(fb.weightMax);
-    fb.weightMin = Number(fb.weightMin);
-    fb.bmiMax = Number(fb.bmiMax);
-    fb.bmiMin = Number(fb.bmiMin);
-    return Object.assign(new BodyscaleGoal(), fb);
+    fb.weightMax = Number(fb.weightMax)
+    fb.weightMin = Number(fb.weightMin)
+    fb.bmiMax = Number(fb.bmiMax)
+    fb.bmiMin = Number(fb.bmiMin)
+    return Object.assign(new BodyscaleGoal(), fb)
   }
 
   static getDefault(height: number): BodyscaleGoal {
-    const obj = new BodyscaleGoal();
+    const obj = new BodyscaleGoal()
 
-    obj.bmiMin = 18.5;
-    obj.bmiMax = 23;
+    obj.bmiMin = 18.5
+    obj.bmiMax = 23
 
-    obj.weightMin = Math.floor((obj.bmiMin) * (height / 100) * (height / 100));
-    obj.weightMax = Math.floor((obj.bmiMax) * (height / 100) * (height / 100));
+    obj.weightMin = Math.floor((obj.bmiMin) * (height / 100) * (height / 100))
+    obj.weightMax = Math.floor((obj.bmiMax) * (height / 100) * (height / 100))
 
-    return obj;
+    return obj
   }
 }
 
 
-
 // ===UserHealth===
 export type TypeDiabeteType = '1형' | '2형' | '임신성';
-export const TemplateDiabeteType: TypeDiabeteType[] = ['1형', '2형', '임신성'];
+export const TemplateDiabeteType: TypeDiabeteType[] = ['1형', '2형', '임신성']
 export type TypeDiabeteDiasesePeriod = '1년미만' | '1년' | '2년~10년' | '10년이상';
-export const TemplateDiabeteDiseasePeriod: TypeDiabeteDiasesePeriod[] = ['1년미만', '1년', '2년~10년', '10년이상'];
+export const TemplateDiabeteDiseasePeriod: TypeDiabeteDiasesePeriod[] = ['1년미만', '1년', '2년~10년', '10년이상']
 export type TypeDiabeteRemedy = '습관교정' | '경구약' | '인슐린';
-export const TemplateDiabeteRemedy: TypeDiabeteRemedy[] = ['습관교정', '경구약', '인슐린'];
+export const TemplateDiabeteRemedy: TypeDiabeteRemedy[] = ['습관교정', '경구약', '인슐린']
 
 export interface UserHealthDiabete {
   diabeteType: TypeDiabeteType;
@@ -212,7 +202,8 @@ export interface UserHealthDiabete {
 }
 
 export type TypeHasSmoked = 'never' | 'ex' | 'current';
-export const TemplateHasSmoked = ['never', 'ex', 'current'];
+export const TemplateHasSmoked = ['never', 'ex', 'current']
+
 export interface UserHealthDrinkSmoke {
   hasDrink: boolean;
   drinkCycle: number; // per week
