@@ -1,6 +1,6 @@
 import * as moment from 'moment'
 import * as firebase from 'firebase'
-import { average, getArrayStatistic } from 'autochek-base/Utils'
+import {average, DaySummaryWithArray, getArrayStatistic} from 'autochek-base/Utils';
 import { DietGoal, GlucoseGoal } from './user-goal'
 import Timestamp = firebase.firestore.Timestamp
 
@@ -172,11 +172,6 @@ export interface FoodlensMeasurement {
   imgurl?: string;
 }
 
-export interface DaySummaryWithArray<T> {
-  date: Date;
-  value: T[];
-}
-
 export interface FoodlensDaySummary extends DaySummaryWithArray<FoodlensMeasurement> {
   date: Date;
   value: FoodlensMeasurement[];
@@ -203,17 +198,17 @@ export class BodyscaleMeasurement extends DeviceDataBase {
   static getKeys(): string[]{
     return ['date', 'weight', 'fat', 'water', 'muscle', 'bmr', 'visceral', 'bone', 'bmi'];
   }
-  
+
   static getColumnNamesMap(): object {
     return {'date':'날짜',
-     'weight':'체중', 
-     'fat':'체지방', 
-     'water':'체수분', 
-     'muscle':"근육량",
-     'bmr':"기초대사량",
-     'visceral':"복부지방",
-     'bone':"골량",
-     'bmi':"BMI"};
+      'weight':'체중',
+      'fat':'체지방',
+      'water':'체수분',
+      'muscle':"근육량",
+      'bmr':"기초대사량",
+      'visceral':"복부지방",
+      'bone':"골량",
+      'bmi':"BMI"};
   }
 
   getPrimaryKey(): string {
@@ -276,18 +271,18 @@ export class GlucosemeterMeasurement extends DeviceDataBase {
   static deserializer(value: any): GlucosemeterMeasurement {
 
     return new GlucosemeterMeasurement((value.date instanceof firebase.firestore.Timestamp) ? value.date.toDate() : value.date,
-      Number(value.measurement),
-      //typeof (value.measurement) === 'string' ? value.measurement.parseInt() : value.measurement,
-      value.timeofday,
-      value.condition,
-      value.ignore,
-      value.id);
+        Number(value.measurement),
+        //typeof (value.measurement) === 'string' ? value.measurement.parseInt() : value.measurement,
+        value.timeofday,
+        value.condition,
+        value.ignore,
+        value.id);
   }
 
   static getKeys(): string[]{
     return ['date', 'measurement', 'timeofday', 'condition', 'ignore'];
   }
-  
+
   static getColumnNamesMap(): object {
     return {'date':'날짜',
       'measurement':'측정값',
@@ -315,7 +310,7 @@ export class GlucosemeterMeasurement extends DeviceDataBase {
   }
 
   getTimeIndex(): number {
-    let offset = 0
+    let offset: number;
     switch (this.timeofday) {
       case 'breakfast':
         offset = 1
@@ -507,10 +502,10 @@ export class GlucosemeterDaySummary {
     for (; diter <= eiter; diter.add(1, 'day')) {
       console.log(diter.toDate())
       const gmCandidate = gms.filter(
-        (gm) => {
-          return gm.date.getTime() >= diter.toDate().getTime() &&
-            gm.date.getTime() < moment(diter).add(1, 'day').toDate().getTime()
-        })
+          (gm) => {
+            return gm.date.getTime() >= diter.toDate().getTime() &&
+                gm.date.getTime() < moment(diter).add(1, 'day').toDate().getTime()
+          })
       console.log(gmCandidate)
       if (gmCandidate.length > 0) {
         // console.log('fillempty filter success', diter.toDate(), gmCandidate)
@@ -615,17 +610,17 @@ export class PedometerDaySummary extends DeviceDataBase {
     }
 
     return ptss.reduce(
-      (prev, next) => {
-        if (prev.date.getTime() < next.date.getTime()) {
-          prev.date = next.date
-        }
-        prev.step += next.step
-        prev.dist += next.dist
-        prev.cal += next.cal
+        (prev, next) => {
+          if (prev.date.getTime() < next.date.getTime()) {
+            prev.date = next.date
+          }
+          prev.step += next.step
+          prev.dist += next.dist
+          prev.cal += next.cal
 
-        return prev
-      },
-      new PedometerDaySummary(new Date(0), 0, 0, 0)
+          return prev
+        },
+        new PedometerDaySummary(new Date(0), 0, 0, 0)
     )
   }
 
@@ -651,7 +646,7 @@ export class PedometerDaySummary extends DeviceDataBase {
   static getKeys(): string[]{
     return ['date', 'step', 'cal', 'dist'];
   }
-  
+
   static getColumnNamesMap(): object {
     return {
       'date':'날짜',
@@ -745,14 +740,14 @@ export class PedometerTimeSegment extends DeviceDataBase {
       return null
     }
     return ptss.reduce(
-      (prev, iter) => {
-        prev.duration += iter.duration
-        prev.step += iter.step
-        prev.cal += iter.cal
-        prev.dist += iter.dist
-        return prev
-      },
-      new PedometerTimeSegment(moment(ptss[0].date).startOf('hour').toDate(), 0, 0, 0, 0)
+        (prev, iter) => {
+          prev.duration += iter.duration
+          prev.step += iter.step
+          prev.cal += iter.cal
+          prev.dist += iter.dist
+          return prev
+        },
+        new PedometerTimeSegment(moment(ptss[0].date).startOf('hour').toDate(), 0, 0, 0, 0)
     )
 
   }
@@ -826,14 +821,14 @@ export class FoodlensMeasurement extends DeviceDataBase {
       this.refPhoto = ''
       this.mealType = raw.mealType
       this.composition = raw.foodPositionList.map(
-        (pos: FoodlensRawFoodPosition) => {
-          return new FoodlensPartial(pos.userSelectedFood.foodName,
-            pos.eatAmount,
-            pos.userSelectedFood.nutrition.calories,
-            '',
-            pos.userSelectedFood.nutrition)
+          (pos: FoodlensRawFoodPosition) => {
+            return new FoodlensPartial(pos.userSelectedFood.foodName,
+                pos.eatAmount,
+                pos.userSelectedFood.nutrition.calories,
+                '',
+                pos.userSelectedFood.nutrition)
 
-        }
+          }
       )
     } else {
       if (value) {
@@ -891,13 +886,6 @@ export class FoodlensPartial {
 }
 
 
-export class DaySummaryWithArray<T> {
-  constructor(date: Date) {
-    this.date = date
-    this.value = new Array<T>()
-  }
-}
-
 export class FoodlensDaySummary {
   constructor(date: Date, value?: FoodlensMeasurement[]) {
     this.date = date
@@ -920,7 +908,7 @@ export class BloodpressureMeasurement extends DeviceDataBase {
   static getKeys(): string[]{
     return ['date', 'systolic', 'diastolic', 'mean', 'rate'];
   }
-  
+
   static getColumnNamesMap(): object {
     return {'date':'날짜',
       'systolic':'수축(최대)',
@@ -953,7 +941,7 @@ export class BloodpressureMeasurement extends DeviceDataBase {
     if (typeof (this.rate) === 'string') {
       this.rate = parseInt(this.rate, 10)
     }
-    
+
   }
 }
 

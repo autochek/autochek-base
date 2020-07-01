@@ -1,5 +1,16 @@
 import * as moment from 'moment'
-import { DaySummaryWithArray } from 'autochek-base/objects/device-data-object'
+
+export interface DaySummaryWithArray<T> {
+  date: Date;
+  value: T[];
+}
+
+export class DaySummaryWithArray<T> {
+  constructor(date: Date) {
+    this.date = date
+    this.value = new Array<T>()
+  }
+}
 
 export function splitArrayByDate<T>(arr: T[], keyname = 'date', timeunit: moment.unitOfTime.StartOf = 'day'): DaySummaryWithArray<T>[] {
   const setDate: string[] = []
