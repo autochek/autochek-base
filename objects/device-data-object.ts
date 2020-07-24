@@ -25,7 +25,7 @@ export let GlucosemeterDaySummaryProperties = ['', 'morningBeforeMeal', 'morning
 	'eveningBeforeMeal', 'eveningAfterMeal', 'beforeSleep'];
 
 export interface GlucosemeterMeasurement {
-	id: String;
+	id: string;
 	date: Date;
 	measurement: number; // unit : mg/gL
 	condition: GmCondition; // '식전', '식후' 혹은 '공복'/'식후'
@@ -71,8 +71,18 @@ export interface BloodpressureStatistics {
 	count_normal: number;
 };
 
+/**
+ * 스마트밴드 데이터
+ */
+export class PedometerMeasurement {
+	log: string;
+	timeSegments: PedometerTimeSegment[];
+	daySummaries: PedometerDaySummary[];
+	sleepSegments: PedometerSleepSegment[];
+	heartrateSegments: PedometerHeartrateSegment[];
+	sleepSummaries: PedometerSleepSummary[];
+};
 
-// from Pedometer
 export interface PedometerDaySummary {
 	date: Date;
 	step: number;
@@ -181,7 +191,7 @@ export interface FoodlensDaySummary extends DaySummaryWithArray<FoodlensMeasurem
 
 export abstract class DeviceDataBase {
 
-	id: String;
+	id: string;
 
 	abstract getPrimaryKey(): string;
 
@@ -202,15 +212,15 @@ export class BodyscaleMeasurement extends DeviceDataBase {
 
 	static getColumnNamesMap(): object {
 		return {
-			'date': '날짜',
-			'weight': '체중',
-			'fat': '체지방',
-			'water': '체수분',
-			'muscle': "근육량",
-			'bmr': "기초대사량",
-			'visceral': "복부지방",
-			'bone': "골량",
-			'bmi': "BMI"
+			date: "날짜",
+			weight: "체중",
+			fat: "체지방",
+			water: "체수분",
+			muscle: "근육량",
+			bmr: "기초대사량",
+			visceral: "복부지방",
+			bone: "골량",
+			bmi: "BMI"
 		};
 	};
 
@@ -231,7 +241,7 @@ export class BodyscaleMeasurement extends DeviceDataBase {
 		}
 	}
 
-	public getMuscleMass(): Number {
+	public getMuscleMass(): number {
 		if (!this.muscle) {
 			return 0;
 		}
@@ -275,7 +285,7 @@ export class GlucosemeterMeasurement extends DeviceDataBase {
 
 		return new GlucosemeterMeasurement((value.date instanceof firebase.firestore.Timestamp) ? value.date.toDate() : value.date,
 			Number(value.measurement),
-			//typeof (value.measurement) === 'string' ? value.measurement.parseInt() : value.measurement,
+			// typeof (value.measurement) === 'string' ? value.measurement.parseInt() : value.measurement,
 			value.timeofday,
 			value.condition,
 			value.ignore,
@@ -288,11 +298,11 @@ export class GlucosemeterMeasurement extends DeviceDataBase {
 
 	static getColumnNamesMap(): object {
 		return {
-			'date': '날짜',
-			'measurement': '측정값',
-			'timeofday': '측정시간',
-			'condition': '측정조건',
-			'ignore': '무시된데이터'
+			date: '날짜',
+			measurement: '측정값',
+			timeofday: '측정시간',
+			condition: '측정조건',
+			ignore: '무시된데이터'
 		};
 	}
 
@@ -423,7 +433,7 @@ export class GlucosemeterStatistics {
 
 		let min = 0;
 		let max = 0;
-		for (const prop in gm) {
+		for (const prop of Object.keys(gm)) {
 			const wgm = gm[prop];
 			if (typeof (wgm) !== 'number') {
 				continue;
@@ -493,7 +503,7 @@ export class GlucosemeterDaySummary {
 			}
 		}
 
-		for (const prop in abundant) {
+		for (const prop of Object.keys(abundant)) {
 			gds[prop] = average(abundant[prop]);
 		}
 
@@ -654,10 +664,10 @@ export class PedometerDaySummary extends DeviceDataBase {
 
 	static getColumnNamesMap(): object {
 		return {
-			'date': '날짜',
-			'step': '걸음수',
-			'cal': '소모칼로리',
-			'dist': '이동거리',
+			date: '날짜',
+			step: '걸음수',
+			cal: '소모칼로리',
+			dist: '이동거리',
 		};
 	}
 
@@ -917,11 +927,11 @@ export class BloodpressureMeasurement extends DeviceDataBase {
 
 	static getColumnNamesMap(): object {
 		return {
-			'date': '날짜',
-			'systolic': '수축(최대)',
-			'diastolic': '이완(최소)',
-			'mean': '평균',
-			'rate': '심박수(분당)'
+			date: '날짜',
+			systolic: '수축(최대)',
+			diastolic: '이완(최소)',
+			mean: '평균',
+			rate: '심박수(분당)'
 		};
 	}
 

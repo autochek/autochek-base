@@ -1,4 +1,5 @@
 import * as moment from 'moment';
+import * as Hangul from 'hangul-js';
 
 export interface DaySummaryWithArray<T> {
 	date: Date;
@@ -161,4 +162,32 @@ export function makeid(length: number) {
 
 export function flatArray<T>(arr: T[][]): T[] {
 	return [].concat.apply([], arr);
+}
+
+/**
+ * 주어진 문자열에서 초성들만 뽑은 문자열을 반환한다.
+ * @param value 처리할 문자열
+ * @return 초성 문자열
+ */
+export function disassembleHangul(value: string): string {
+	let result: string = value;
+	const chars: string[] = [];
+
+	// 기관명이 존재하는 경우
+	if(value && value.length > 0) {
+		// 문자열의 모든 글자에 대해서 처리
+		for (var index = 0; index < value.length; index++) {
+
+			// 글자를 자음/모음 분리
+			const disassembles: string[] = Hangul.disassemble(value.charAt(index));
+			// 분리된 자음/모음이 존재하는 경우, 초성을 목록에 추가
+			if(disassembles && disassembles.length > 0)
+				chars.push(disassembles[0]);
+		}
+
+		// 추가된 초성들을 문자열로 변환
+		result = chars.join('');
+	}
+
+	return result;
 }
