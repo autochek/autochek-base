@@ -20,6 +20,11 @@ export class AgencyInfo {
 	firstCharName: string = "";
 
 	/**
+	 * 표시 순서
+	 */
+	displayNo: number = 0;
+
+	/**
 	 * 등록일시
 	 */
 	registeredDate: Date | firebase.firestore.Timestamp;
@@ -30,11 +35,6 @@ export class AgencyInfo {
 	 * @param cloneSource 복제할 객체
 	 */
 	constructor(id?: string, cloneSource?: any) {
-
-		// 아이디가 존재하는 경우
-		if(id)
-			this.id = id;
-
 		// 복제할 객체가 존재하는 경우
 		if (cloneSource) {
 			Object.assign(this, cloneSource);
@@ -44,5 +44,9 @@ export class AgencyInfo {
 			this.registeredDate = new Date();
 		}
 
+		// 아이디가 존재하는 경우
+		if(id) {
+			this.id = id;
+		}
 	}
 }
