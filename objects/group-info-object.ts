@@ -3,16 +3,16 @@ import * as firebase from 'firebase';
 /**
  * 기관정보 클래스
  */
-export class AgencyInfo {
+export class GroupInfo {
 	/**
 	 * 아이디
 	 */
-	id: string = "";
+	uid: string = "";
 
 	/**
 	 * 기관명
 	 */
-	name: string = "";
+	groupName: string = "";
 
 	/**
 	 * 초성명
@@ -22,31 +22,36 @@ export class AgencyInfo {
 	/**
 	 * 표시 순서
 	 */
-	displayNo: number = 0;
+	idx: number = 0;
 
 	/**
 	 * 등록일시
 	 */
-	registeredDate: Date | firebase.firestore.Timestamp;
+	regDate: Date | firebase.firestore.Timestamp;
+
+	/**
+	 * 수정일시
+	 */
+	modDate: Date | firebase.firestore.Timestamp;
 
 	/**
 	 * 생성자
-	 * @param id 아이디
+	 * @param uid 아이디
 	 * @param cloneSource 복제할 객체
 	 */
-	constructor(id?: string, cloneSource?: any) {
+	constructor(uid?: string, cloneSource?: any) {
 		// 복제할 객체가 존재하는 경우
 		if (cloneSource) {
 			Object.assign(this, cloneSource);
 		}
 		// 복제할 객체가 존재하지 않는 경우
 		else {
-			this.registeredDate = new Date();
+			this.regDate = new Date();
 		}
 
 		// 아이디가 존재하는 경우
-		if(id) {
-			this.id = id;
+		if(uid) {
+			this.uid = uid;
 		}
 	}
 }
