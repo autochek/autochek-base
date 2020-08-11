@@ -141,8 +141,6 @@ export interface FoodlensNutrition {
 	vitaminc: number;
 	vitamind: number;
 	vitamine: number;
-	rawCalories: number;
-	rawTotalGram: number;
 };
 
 export interface FoodlensRawUserSelectedFood {
