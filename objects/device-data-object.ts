@@ -130,8 +130,6 @@ export interface FoodlensNutrition {
 	dietrayfiber: number;
 	fat: number;
 	protein: number;
-	rawCalories: number;
-	rawtotalGram: number;
 	saturatedfat: number;
 	sodium: number;
 	sugar: number;
@@ -143,6 +141,8 @@ export interface FoodlensNutrition {
 	vitaminc: number;
 	vitamind: number;
 	vitamine: number;
+	rawCalories: number;
+	rawTotalGram: number;
 };
 
 export interface FoodlensRawUserSelectedFood {
