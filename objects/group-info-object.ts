@@ -50,7 +50,7 @@ export class GroupInfo {
 		}
 
 		// 아이디가 존재하는 경우
-		if(uid) {
+		if (uid) {
 			this.uid = uid;
 		}
 	}

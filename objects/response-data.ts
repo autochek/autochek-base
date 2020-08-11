@@ -1,6 +1,3 @@
-import * as firebase from 'firebase';
-import * as moment from 'moment';
-
 /**
  * 단일 데이터 응답 클래스
  */
