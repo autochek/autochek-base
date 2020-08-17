@@ -51,6 +51,22 @@ export class UserInfo {
 		}
 	}
 
+	get displayName(): string {
+
+		debugger;
+
+		if(this.name.isEmpty() && this.email.isEmpty)
+			return "";
+		else {
+			if(this.name.isEmpty())
+				return this.email;
+			else if(this.email.isEmpty)
+				return this.name;
+			else
+				return `${this.name} (${this.email})`;
+		}
+	}
+
 	getAge(): number {
 		return moment().startOf('year').diff(moment(this.birth).startOf('year'), 'years') + 1;
 	}
