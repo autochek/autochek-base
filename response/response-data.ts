@@ -1,7 +1,7 @@
 /**
  * 단일 데이터 응답 클래스
  */
-export class ResponseObject<T> {
+export class ResponseData<T = any> {
 	/**
 	 * 처리 성공 여부
 	 */
@@ -28,26 +28,3 @@ export class ResponseObject<T> {
 	};
 }
 
-/**
- * 단일 데이터 응답 클래스
- */
-export class ResponseData {
-	/**
-	 * 처리 성공 여부
-	 */
-	public result: boolean;
-	/**
-	 * 성공/에러 메세지
-	 */
-	public message: string;
-
-	/**
-	 * 생성자
-	 * @param result 처리 성공 여부
-	 * @param message 성공/에러 메세지
-	 */
-	constructor(result?: boolean, message?: string) {
-		this.result = result;
-		this.message = message;
-	};
-}

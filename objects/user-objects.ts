@@ -28,6 +28,7 @@ export interface UserInfo {
 export class UserInfo {
 	// /user_info/${uid}
 	constructor(clone?: UserInfo) {
+
 		const blank: UserInfo = {} as UserInfo;
 		Object.assign(this, clone);
 
@@ -51,19 +52,33 @@ export class UserInfo {
 		}
 	}
 
+	/**
+	 * 사용자의 화면 표시명을 가져온다.
+	 */
 	get displayName(): string {
+		return UserInfo.getDisplayName(this);
+	}
 
-		debugger;
-
-		if(this.name.isEmpty() && this.email.isEmpty)
-			return "";
+	/**
+	 * 사용자의 화면 표시명을 가져온다.
+	 * @param userInfo 사용자 정보 객체
+	 */
+	static getDisplayName(userInfo: UserInfo): string {
+		// 사용자 정보가 유효한 경우
+		if(userInfo) {
+			if(userInfo.name.isEmpty() && userInfo.email.isEmpty)
+				return "";
+			else {
+				if(this.name.isEmpty())
+					return userInfo.email;
+				else if(userInfo.email.isEmpty())
+					return this.name;
+				else
+					return `${userInfo.name} (${userInfo.email})`;
+			}
+		}
 		else {
-			if(this.name.isEmpty())
-				return this.email;
-			else if(this.email.isEmpty)
-				return this.name;
-			else
-				return `${this.name} (${this.email})`;
+			return "";
 		}
 	}
 

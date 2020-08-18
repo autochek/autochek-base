@@ -1,4 +1,4 @@
-import {QueryResults} from "autochek-base/objects/response-query-results";
+import {QueryResults} from "autochek-base/response/response-query-results";
 
 /**
  * 데이터 목록 응답 클래스
