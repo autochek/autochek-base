@@ -11,9 +11,20 @@ export interface UserGroup {
 }
 
 export interface GroupInfo {
-	// url : /group_info/${uid(group)}
-	groupName: string;
+	/**
+	 * 아이디
+	 */
 	uid: string;
+
+	/**
+	 * 기관명
+	 */
+	groupName: string;
+
+	/**
+	 * Supervisor 그룹인지 여부
+	 */
+	supervisorGroup: boolean;
 }
 
 
