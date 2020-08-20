@@ -29,7 +29,6 @@ export class UserInfo {
 	// /user_info/${uid}
 	constructor(clone?: UserInfo) {
 
-		const blank: UserInfo = {} as UserInfo;
 		Object.assign(this, clone);
 
 		if (this.birth && this.birth instanceof firebase.firestore.Timestamp) {
@@ -56,29 +55,25 @@ export class UserInfo {
 	 * 사용자의 화면 표시명을 가져온다.
 	 */
 	get displayName(): string {
-		return UserInfo.getDisplayName(this);
+		return UserInfo.getDisplayName(this.name, this.email);
 	}
 
 	/**
 	 * 사용자의 화면 표시명을 가져온다.
-	 * @param userInfo 사용자 정보 객체
+	 * @param name 사용자명
+	 * @param email 이메일
 	 */
-	static getDisplayName(userInfo: UserInfo): string {
-		// 사용자 정보가 유효한 경우
-		if(userInfo) {
-			if(userInfo.name.isEmpty() && userInfo.email.isEmpty)
-				return "";
-			else {
-				if(this.name.isEmpty())
-					return userInfo.email;
-				else if(userInfo.email.isEmpty())
-					return this.name;
-				else
-					return `${userInfo.name} (${userInfo.email})`;
+	static getDisplayName(name: string, email: string): string {
+		if (name.isEmpty() && email.isEmpty()) {
+			return '';
+		} else {
+			if (name.isEmpty()) {
+				return email;
+			} else if (email.isEmpty()) {
+				return name;
+			} else {
+				return `${name} (${email})`;
 			}
-		}
-		else {
-			return "";
 		}
 	}
 
