@@ -34,17 +34,17 @@ export class GroupInfo {
 	/**
 	 * 관리자명
 	 */
-	public adminName: string;
+	adminName: string;
 
 	/**
 	 * 관리자 이메일
 	 */
-	public adminEmail: string;
+	adminEmail: string;
 
 	/**
 	 * 관리자 화면 표시명
 	 */
-	public adminDisplayName: string;
+	adminDisplayName: string;
 
 	/**
 	 * 그룹 타입
