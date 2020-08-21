@@ -1,5 +1,6 @@
 import * as firebase from 'firebase';
 import {EnumGroupType} from 'autochek-base/enums/enum-group-type.model';
+import moment from 'moment';
 
 /**
  * 기관정보 클래스
@@ -29,6 +30,21 @@ export class GroupInfo {
 	 * 관리자 아이디
 	 */
 	adminId: string = "";
+
+	/**
+	 * 관리자명
+	 */
+	public adminName: string;
+
+	/**
+	 * 관리자 이메일
+	 */
+	public adminEmail: string;
+
+	/**
+	 * 관리자 화면 표시명
+	 */
+	public adminDisplayName: string;
 
 	/**
 	 * 그룹 타입
@@ -84,6 +100,26 @@ export class GroupInfo {
 	 * 삭제 여부
 	 */
 	isDeleted: boolean = false;
+
+	/**
+	 * 등록일시 문자열
+	 */
+	public get regDateString(): string {
+		if(this.regDate instanceof Date)
+			return moment(this.regDate).format("YYYY-MM-DD HH:mm:ss");
+		else
+			return moment(new Date((<any>this.regDate).seconds * 1000)).format("YYYY-MM-DD HH:mm:ss");
+	}
+
+	/**
+	 * 수정일시 문자열
+	 */
+	public get modDateString(): string {
+		if(this.modDate instanceof Date)
+			return moment(this.modDate).format("YYYY-MM-DD HH:mm:ss");
+		else
+			return moment(new Date((<any>this.modDate).seconds * 1000)).format("YYYY-MM-DD HH:mm:ss");
+	}
 
 	/**
 	 * 생성자

@@ -6,9 +6,9 @@ export enum EnumGroupType {
 	HealthCenter = 2,
 	DiabeticConsumableMaterials = 3
 }
-export namespace EnumAdmitUnlockFileStatus {
+export namespace EnumGroupType {
 
-	export function toDisplayName(value: EnumGroupType) {
+	export function toDisplayShortName(value: EnumGroupType) {
 		switch (value) {
 			case EnumGroupType.Hospital:
 				return "병의원";
