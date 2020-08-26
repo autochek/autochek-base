@@ -64,12 +64,13 @@ export class UserInfo {
 	 * @param email 이메일
 	 */
 	static getDisplayName(name: string, email: string): string {
-		if (name.isEmpty() && email.isEmpty()) {
+
+		if (!name && !email) {
 			return '';
 		} else {
-			if (name.isEmpty()) {
+			if (!name) {
 				return email;
-			} else if (email.isEmpty()) {
+			} else if (!email) {
 				return name;
 			} else {
 				return `${name} (${email})`;
