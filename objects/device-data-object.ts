@@ -57,6 +57,7 @@ export interface BloodpressureMeasurement {
 	diastolic: number;
 	mean: number;
 	rate: number;
+	manualInput: boolean;
 };
 
 export interface BloodpressureStatistics {
@@ -957,7 +958,6 @@ export class BloodpressureMeasurement extends DeviceDataBase {
 		if (typeof (this.rate) === 'string') {
 			this.rate = parseInt(this.rate, 10);
 		}
-
 	}
 }
 
